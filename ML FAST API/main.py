@@ -1,4 +1,3 @@
-from ast import Str
 from distutils.command.config import config
 from urllib import response
 
@@ -60,7 +59,7 @@ disease_classes = ['Apple___Apple_scab',
                    'Tomato___Tomato_mosaic_virus',
                    'Tomato___healthy']
 
-disease_model_path = 'Pickle\Plant_Diseas.pth'
+disease_model_path = 'Pickle/Plant_Diseas.pth'
 disease_model = ResNet9(3, len(disease_classes))
 disease_model.load_state_dict(torch.load(disease_model_path, map_location=torch.device('cpu')))
 disease_model.eval()
@@ -203,13 +202,13 @@ def predict_res(inp):
     # result1=result.to_json()
     print(type(result))
     return result
-@app1.get('/<id>')
+@app1.get('/{id}')
 def index(id):
     return{'id':id}
 
 api_key_forcast='7ec233d4e007782a359aac89def2d631'
 
-@app1.get('/weather/<city>')
+@app1.get('/weather/{city}')
 def Weather_forecast(city):
     url = f'https://api.openweathermap.org/data/2.5/weather?q={city}&appid={api_key_forcast}'
     req = requests.get(url)
@@ -232,7 +231,7 @@ def Weather_forecast(city):
         wind=data2['list'][0]['wind']['speed']
         final.append({time[0]:{time[1]:{'Weather':disc,'temp_min':temp_min,'temp_max':temp_max,'wind':wind,'Allover':wet}}})
     return final
-@app1.get('/District/<dist>')
+@app1.get('/District/{dist}')
 def find_city(dist):
     # dist_list=['Kachchh' 'Banas Kantha' 'Patan' 'Mahesana' 'Sabar Kantha' 'Gandhinagar'
     #       'Ahmadabad' 'Surendranagar' 'Rajkot' 'Jamnagar' 'Porbandar' 'Junagadh'
@@ -250,9 +249,10 @@ def find_city(dist):
         village_map.append({i:village})
 
     return res,village_map
-
-@app1.get('/Crop_Recommandation/<city>/<int:N>/<int:P>/<int:K>/<string:Ph>/<string:rain>')
-
+@app1.get('/hello')
+def hello_world():
+    return {"message": "Server is working!"}
+@app1.get('/Crop_Recommandation/{city}/{N}/{P}/{K}/{Ph}/{rain}')
 def predict(city,N,P,K,Ph,rain):
 
     result_crop=predict_res({"location":city,"nit":N,"pot":P,"phos":K,"ph":float(Ph),"rain":float(rain)})
@@ -264,7 +264,10 @@ def predict(city,N,P,K,Ph,rain):
     print(data)
     return data
 
-@app1.get('/Crop_Yield/<dist>/<season>/<crop>/<int:area>/<int:N>/<int:P>/<int:K>/<string:Ph>')
+#
+# I CHANGED THIS LINE:
+#
+@app1.get('/Crop_Yield/{dist}/{season}/{crop}/{area}/{N}/{P}/{K}/{Ph}')
 def production(dist,season,crop,area,N,P,K,Ph):
     print('abcbqkfkwbefkhbwakbfajwfkjabksfvbkhabfhkwaebkfebskbchawbekfjwkebfckwabkejfbkesb ckhwebefk wKHBCKWbfkhwbHKF BWKjfbkwbFKBWfbkWHBFEK WkfehbkhWBFKb ekfhbwhebfkq FBKHFEBKHWEBFKbWKHFVHKWB KFehbkHWBFKh bkefsbiywBFEKSD BFJKeb')
     total_production=predict_yield({"location":dist,"season":season,"crop":crop,"Area":area,"nit":N,"pot":P,"phos":K,"ph":float(Ph)})
@@ -305,4 +308,3 @@ async def prediction_view(file:UploadFile = File(...)): #file:UploadFile = File(
     
     return {"Diseas":final,"Steps & Suggestions":cleantext}
     # bytes_str = io.BytesIO(file.read())
-    

@@ -49,8 +49,8 @@ setLoading(true);
 setshowntop5(true)
 
   const getCropData = () => {
-     axios.get(`https://1a78-117-254-32-101.in.ngrok.io/Crop_Recommandation/%3Ccity%3E/%3Cint:N%3E/%3Cint:P%3E/%3Cint:K%3E/%3Cstring:Ph%3E/%3Cstring:rain%3E?city=${City}&N=${Nitrogen}&P=${Phosphorus}&K=${Potassium}&Ph=${Ph}&rain=${Rain}` , {withCredentials: true})
-    // .then((response) =>  response.json())
+     axios.get(`http://127.0.0.1:8000/Crop_Recommandation/${City}/${Nitrogen}/${Phosphorus}/${Potassium}/${Ph}/${Rain}` , {withCredentials: true})
+    .then((response) =>  response.json())
       .then((data) => {
 const Crops = data.data.Top; 
 console.log(data.data.Top[0].Fert)
