@@ -78,10 +78,11 @@ app1 = FastAPI(
     description="""Take soil parameters from farmer and recommand crop""",
     version="0.0.1",
 )
+# ✅ CORRECT
 origins = [
     "http://localhost",
     "http://localhost:8000",
-    "*"
+    "http://localhost:3000" 
 ]
 
 

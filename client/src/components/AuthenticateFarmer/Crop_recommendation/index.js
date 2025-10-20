@@ -49,15 +49,24 @@ setLoading(true);
 setshowntop5(true)
 
   const getCropData = () => {
-     axios.get(`http://127.0.0.1:8000/Crop_Recommandation/${City}/${Nitrogen}/${Phosphorus}/${Potassium}/${Ph}/${Rain}` , {withCredentials: true})
-    .then((response) =>  response.json())
-      .then((data) => {
-const Crops = data.data.Top; 
-console.log(data.data.Top[0].Fert)
+    axios.get(`http://127.0.0.1:8000/Crop_Recommandation/${City}/${Nitrogen}/${Phosphorus}/${Potassium}/${Ph}/${Rain}`, { withCredentials: true })
+      .then((response) => {
+        // With axios, the data is in the 'response.data' property
+        // Based on your backend, response.data is the array: [...]
+        const Crops = response.data;
+
+        // Your log for 'Fert' (if your backend sends it) would now be:
+        // console.log(Crops[0].Fert);
+
         setTop5data0(Crops);
-        console.warn(Crops)
+        console.warn(Crops);
         setLoading(false);
-      }); 
+      })
+      .catch((error) => {
+        // This stops the loading screen if the API call fails
+        console.error("Error fetching data:", error);
+        setLoading(false);
+      });
   };
   getCropData();
   }

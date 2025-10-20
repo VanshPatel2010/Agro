@@ -50,7 +50,7 @@ setshowntop5(true)
 
   const getCropData = () => {
 
-    axios.get(`https://1a78-117-254-32-101.in.ngrok.io/Crop_Yield/%3Cdist%3E/%3Cseason%3E/%3Ccrop%3E/%3Cint:area%3E/%3Cint:N%3E/%3Cint:P%3E/%3Cint:K%3E/%3Cstring:Ph%3E?dist=${City}&season=${season}&crop=${Crop}&area=${Area}&N=${Nitrogen}&P=${Phosphorus}&K=${Potassium}&Ph=${Ph}` , {withCredentials: true})
+    axios.get(`http://127.0.0.1:8000/Crop_Yield/${City}/${season}/${Crop}/${Area}/${Nitrogen}/${Phosphorus}/${Potassium}/${Ph}` , {withCredentials: true})
     .then(response => {
       console.log(response.data);
       setProduction(response.data.Production)
