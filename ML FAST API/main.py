@@ -122,7 +122,7 @@ app1.add_middleware(
 def predict_yield(dic):
     city=dic.get('location')
     season=dic.get('season')
-    area=dic.get('Area')
+    area=dic.get('Area')  # Get area to calculate yield
     crop=dic.get('crop')
     nit=dic.get('nit')
     pot=dic.get('pot')
@@ -139,9 +139,22 @@ def predict_yield(dic):
     data = pd.DataFrame(
         {"State_Name":state, "District_Name":city, "Crop_Year":2022, "Season": season,"Crop":crop,"Area":area,"N":[nit],"P":[pot],
          "K":[phos],"PH":[ph],"TEM":[temp1]})
+    
+    # pipe1.predict() returns an array like [1234.5]
     res = pipe1.predict(data)
-    print(type(res))
-    return {season:res.tolist()}
+    
+    # Get the single production value from the array
+    production_value = res[0]
+    
+    # Calculate yield (Production / Area)
+    try:
+        # Ensure area is a float for division
+        yield_value = production_value / float(area)
+    except ZeroDivisionError:
+        yield_value = 0
+    
+    # Return both values
+    return production_value, yield_value
 
 
 def predict_res(inp):
@@ -269,11 +282,16 @@ def predict(city,N,P,K,Ph,rain):
 # I CHANGED THIS LINE:
 #
 @app1.get('/Crop_Yield/{dist}/{season}/{crop}/{area}/{N}/{P}/{K}/{Ph}')
-def production(dist,season,crop,area,N,P,K,Ph):
+async def production(dist,season,crop,area,N,P,K,Ph):
     print('abcbqkfkwbefkhbwakbfajwfkjabksfvbkhabfhkwaebkfebskbchawbekfjwkebfckwabkejfbkesb ckhwebefk wKHBCKWbfkhwbHKF BWKjfbkwbFKBWfbkWHBFEK WkfehbkhWBFKb ekfhbwhebfkq FBKHFEBKHWEBFKbWKHFVHKWB KFehbkHWBFKh bkefsbiywBFEKSD BFJKeb')
-    total_production=predict_yield({"location":dist,"season":season,"crop":crop,"Area":area,"nit":N,"pot":P,"phos":K,"ph":float(Ph)})
-    print(total_production)
-    return {'Yield':total_production}
+    
+    # Get the two values from your helper function
+    prod_val, yield_val = predict_yield({"location":dist,"season":season,"crop":crop,"Area":area,"nit":N,"pot":P,"phos":K,"ph":float(Ph)})
+
+    print(f"Production: {prod_val}, Yield: {yield_val}")
+    
+    # Return the simple JSON object the frontend expects
+    return {'Production': prod_val, 'Yield': yield_val}
 
 @app1.post('/Crop_Diseas')
 async def prediction_view(file:UploadFile = File(...)): #file:UploadFile = File(...)
