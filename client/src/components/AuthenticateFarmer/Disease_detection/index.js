@@ -27,7 +27,7 @@ class App extends Component {
     console.log(this.state.selectedFile);
     console.log(this.state.selectedFile.name);
 
-    const promise = axios.post("http://localhost:5000/Crop_Diseas", formData);
+    const promise = axios.post("http://localhost:8000/Crop_Diseas", formData);
     promise.then((data) => {
       this.setState({ Diseas: data.data });
       this.setState({ Sugestions: data.data.Suggestions });
